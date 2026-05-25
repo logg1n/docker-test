@@ -1,7 +1,6 @@
 name: Build and Push Docker Image to GHCR
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - '*' # Реагируем на теги
