@@ -1,1 +1,2 @@
-FROM alpine:latest\nCMD [\"echo\", \"Hello!\"]
+FROM alpine:latest
+CMD ["echo", "Hello from my automated build!"]
