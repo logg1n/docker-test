@@ -1,1 +1,1 @@
-"FROM alpine:latest\nCMD [\"echo\", \"Hello!\"]"
+FROM alpine:latest\nCMD [\"echo\", \"Hello!\"]
