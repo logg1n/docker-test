@@ -3,14 +3,12 @@ name: Build and Push Docker Image to GHCR
 on:
   push:
     tags:
-      - '*' # Реагируем на теги
+      - '*'
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     
-    # ЖЕЛЕЗОБЕТОННАЯ ЗАЩИТА №1: 
-    # Эта работа вообще не запустится при мерже веток. Она включится ТОЛЬКО для тегов!
     if: github.ref_type == 'tag'
     
     permissions:
@@ -22,8 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ЖЕЛЕЗОБЕТОННАЯ ЗАЩИТА №2 (Ваш пограничник):
-      # Проверяет, что этот тег был создан строго от ветки main
       - name: Verify tag is on main branch
         run: |
           if git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
@@ -33,7 +29,6 @@ jobs:
             exit 1
           fi
 
-      # Дальше ваши стандартные шаги сборки...
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -41,7 +36,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Теперь здесь никогда не будет пустоты, потому что сюда дойдут ТОЛЬКО теги!
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
