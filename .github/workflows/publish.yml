@@ -49,7 +49,6 @@ jobs:
           
           tags: |
             type=ref,event=tag
-            type=ref,event=release
             type=raw,value=latest
           flavor: |
             lowercase=true
