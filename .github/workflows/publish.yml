@@ -4,16 +4,20 @@ on:
   push:
     tags:
       - '*'
+  release:
+    types: [published] # Срабатывает строго при публикации релиза
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     
-    if: github.ref_type == 'tag'
+   
+    if: github.ref_type == 'tag' || github.event_name == 'release'
     
     permissions:
       contents: read
       packages: write
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,6 +26,7 @@ jobs:
 
       - name: Verify tag is on main branch
         run: |
+          git fetch origin main --depth=100
           if git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
             echo "Success: Tag is based on main branch."
           else
@@ -41,9 +46,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
+          
           tags: |
             type=ref,event=tag
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=ref,event=release
+            type=raw,value=latest
+          flavor: |
+            lowercase=true
 
       - name: Build and push image
         uses: docker/build-push-action@v5
